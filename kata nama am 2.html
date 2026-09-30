@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KEM-KaNAK: KATA NAMA AM - Jejak Kata, Takluk Puncak!</title>
+  <style>
+    /* =========================================================
+       CSS RESET & GLOBAL STYLES (ACCESSIBLE & HIGH CONTRAST)
+       ========================================================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Fredoka', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1A2980 0%, #26D0CE 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      color: #2D3748;
+      overflow-x: hidden;
+    }
+
+    #game-container {
+      width: 100%;
+      max-width: 900px;
+      height: 680px;
+      background: #EBF8FF;
+      border: 8px solid #3182CE;
+      border-radius: 28px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Common Button Styling */
+    .btn-main {
+      background: #48BB78;
+      color: #FFFFFF;
+      font-size: 1.5rem;
+      font-weight: bold;
+      padding: 16px 36px;
+      border: 4px solid #2F855A;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 0 #276749, 0 12px 20px rgba(0, 0, 0, 0.2);
+      transition: all 0.15s ease-in-out;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .btn-main:hover {
+      background: #38A169;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 0 #276749, 0 15px 22px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-main:active {
+      transform: translateY(6px);
+      box-shadow: 0 2px 0 #276749, 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-audio {
+      background: #ED8936;
+      border-color: #C05621;
+      box-shadow: 0 6px 0 #9C4221;
+      font-size: 1.25rem;
+      padding: 12px 24px;
+    }
+
+    .btn-audio:hover {
+      background: #DD6B20;
+      box-shadow: 0 8px 0 #9C4221;
+    }
+
+    /* Screen Management */
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      flex-direction: column;
+      z-index: 10;
+      background: linear-gradient(to bottom, #81E6D9, #EBF8FF);
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    /* Header Bar */
+    .game-header {
+      background: #2B6CB0;
+      color: white;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 5px solid #2C5282;
+      z-index: 20;
+    }
+
+    .title-badge {
+      font-size: 1.3rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      background: #22543D;
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 2px solid #68D391;
+    }
+
+    .stats-container {
+      display: flex;
+      gap: 20px;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .stat-box {
+      background: #1A365D;
+      padding: 6px 16px;
+      border-radius: 16px;
+      border: 2px solid #63B3ED;
+    }
+
+    /* =========================================================
+       SCREEN 1: START SCREEN
+       ========================================================= */
+    #start-screen {
+      background: linear-gradient(to bottom, #63B3ED 0%, #BEE3F8 50%, #68D391 50%, #38A169 100%);
+      justify-content: space-between;
+      align-items: center;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    .title-box {
+      background: rgba(255, 255, 255, 0.95);
+      border: 6px solid #2B6CB0;
+      border-radius: 24px;
+      padding: 20px 40px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .main-title {
+      font-size: 3rem;
+      color: #2C5282;
+      text-shadow: 3px 3px 0px #90CDF4;
+      margin-bottom: 4px;
+      font-weight: 900;
+    }
+
+    .sub-title {
+      font-size: 1.8rem;
+      color: #DD6B20;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .tagline {
+      font-size: 1.3rem;
+      color: #2F855A;
+      font-style: italic;
+      font-weight: bold;
+    }
+
+    .start-visual {
+      width: 100%;
+      max-width: 600px;
+      height: 220px;
+      position: relative;
+    }
+
+    /* =========================================================
+       SCREEN 2: MAP SCREEN
+       ========================================================= */
+    #map-screen {
+      background: #C6F6D5;
+      padding: 20px;
+      align-items: center;
+    }
+
+    .map-header {
+      font-size: 2rem;
+      color: #22543D;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-shadow: 1px 1px 0 white;
+    }
+
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 15px;
+      width: 100%;
+      max-width: 750px;
+      margin-bottom: 25px;
+      background: #FFFFFF;
+      padding: 25px;
+      border-radius: 24px;
+      border: 4px solid #38A169;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .checkpoint-node {
+      background: #EDF2F7;
+      border: 4px solid #CBD5E0;
+      border-radius: 16px;
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-weight: bold;
+      color: #718096;
+      transition: all 0.3s ease;
+    }
+
+    .checkpoint-node.active {
+      background: #FEFCBF;
+      border-color: #D69E2E;
+      color: #744210;
+      transform: scale(1.08);
+      box-shadow: 0 4px 12px rgba(214, 158, 46, 0.4);
+    }
+
+    .checkpoint-node.completed {
+      background: #C6F6D5;
+      border-color: #38A169;
+      color: #22543D;
+    }
+
+    .node-icon {
+      font-size: 1.8rem;
+    }
+
+    /* =========================================================
+       SCREEN 3: HOW TO PLAY SCREEN
+       ========================================================= */
+    #instructions-screen {
+      padding: 25px;
+      align-items: center;
+      background: #EBF8FF;
+    }
+
+    .instruction-card {
+      background: white;
+      border: 5px solid #3182CE;
+      border-radius: 24px;
+      padding: 25px;
+      width: 100%;
+      max-width: 700px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    }
+
+    .instruction-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .instruction-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #2D3748;
+      background: #EDF2F7;
+      padding: 12px;
+      border-radius: 14px;
+    }
+
+    /* =========================================================
+       MAIN GAME SCREEN
+       ========================================================= */
+    #game-screen {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    /* Animation Arena View */
+    .game-viewport {
+      height: 220px;
+      background: linear-gradient(to bottom, #63B3ED 0%, #BEE3F8 60%, #48BB78 60%, #2F855A 100%);
+      position: relative;
+      overflow: hidden;
+      border-bottom: 6px solid #2F855A;
+    }
+
+    .road {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      height: 60px;
+      background: #4A5568;
+      border-top: 4px solid #718096;
+      border-bottom: 4px solid #718096;
+    }
+
+    .road-line {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      height: 0;
+      border-top: 4px dashed #ECC94B;
+    }
+
+    /* Animated Car */
+    .car-container {
+      position: absolute;
+      bottom: 25px;
+      left: 60px;
+      width: 110px;
+      height: 65px;
+      transition: left 1.2s ease-in-out;
+      z-index: 5;
+    }
+
+    .car-container.driving {
+      animation: bounce 0.3s infinite alternate;
+    }
+
+    .car-container.drive-out {
+      left: 750px;
+    }
+
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-3px); }
+    }
+
+    /* Obstacle Styling */
+    .obstacle-container {
+      position: absolute;
+      bottom: 30px;
+      right: 180px;
+      width: 80px;
+      height: 70px;
+      z-index: 4;
+      transition: all 0.6s ease;
+    }
+
+    .obstacle-container.cleared {
+      opacity: 0;
+      transform: translateY(-40px) scale(0.5);
+    }
+
+    /* Progress Bar */
+    .progress-bar-box {
+      width: 100%;
+      background: #E2E8F0;
+      height: 14px;
+      border-radius: 7px;
+      overflow: hidden;
+      border: 2px solid #CBD5E0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #319795;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    /* Interaction & Sentence Section */
+    .interactive-area {
+      flex: 1;
+      background: #EBF8FF;
+      padding: 16px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .audio-controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .sentence-card {
+      background: #FFFFFF;
+      border: 4px solid #3182CE;
+      border-radius: 20px;
+      padding: 16px 24px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+    }
+
+    .sentence-text {
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1.5;
+      color: #1A202C;
+    }
+
+    .highlight-target {
+      color: #6B46C1;
+      background-color: #E9D8FD;
+      padding: 2px 12px;
+      border-radius: 12px;
+      border: 3px solid #9F7AEA;
+      font-weight: 900;
+      display: inline-block;
+    }
+
+    .question-prompt {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #2C5282;
+      margin: 6px 0;
+    }
+
+    /* Large Touch Friendly Options */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      width: 100%;
+    }
+
+    .btn-option {
+      background: #FFFFFF;
+      border: 4px solid #4299E1;
+      color: #2B6CB0;
+      font-size: 1.7rem;
+      font-weight: 900;
+      padding: 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #2B6CB0;
+      transition: all 0.15s ease;
+      text-transform: lowercase;
+    }
+
+    .btn-option:hover {
+      background: #EBF8FF;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 0 #2B6CB0;
+    }
+
+    .btn-option:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #2B6CB0;
+    }
+
+    /* Modal Feedback Overlay */
+    .feedback-modal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .feedback-card {
+      background: white;
+      border-radius: 28px;
+      padding: 30px 40px;
+      text-align: center;
+      border: 6px solid #38A169;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+      max-width: 500px;
+      width: 90%;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .feedback-card.wrong {
+      border-color: #E53E3E;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .feedback-title {
+      font-size: 2.5rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .feedback-title.correct { color: #38A169; }
+    .feedback-title.wrong { color: #E53E3E; }
+
+    .feedback-msg {
+      font-size: 1.3rem;
+      color: #4A5568;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    /* =========================================================
+       SCREEN 5: VICTORY SUMMIT SCREEN
+       ========================================================= */
+    #victory-screen {
+      background: linear-gradient(to bottom, #9F7AEA 0%, #BEE3F8 50%, #38A169 100%);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .victory-card {
+      background: rgba(255, 255, 255, 0.95);
+      border: 8px solid #D69E2E;
+      border-radius: 32px;
+      padding: 30px 40px;
+      max-width: 650px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+
+    /* Clouds background decoration */
+    .cloud {
+      position: absolute;
+      background: white;
+      border-radius: 50px;
+      opacity: 0.8;
+      animation: moveClouds linear infinite;
+    }
+
+    @keyframes moveClouds {
+      0% { transform: translateX(900px); }
+      100% { transform: translateX(-200px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="game-container">
+
+    <!-- =========================================================
+         SCREEN 1: START SCREEN
+         ========================================================= -->
+    <div id="start-screen" class="screen active">
+      <!-- Decor Clouds -->
+      <div class="cloud" style="width: 100px; height: 35px; top: 20px; animation-duration: 25s;"></div>
+      <div class="cloud" style="width: 140px; height: 45px; top: 60px; animation-duration: 18s;"></div>
+
+      <div class="title-box">
+        <div class="main-title">KEM-KaNAK</div>
+        <div class="sub-title">KATA NAMA AM</div>
+        <div class="tagline">“Jejak Kata, Takluk Puncak!”</div>
+      </div>
+
+      <!-- Start Visual SVG Scene -->
+      <div class="start-visual">
+        <svg viewBox="0 0 600 200" width="100%" height="100%">
+          <!-- Mountain background -->
+          <polygon points="100,200 250,50 400,200" fill="#4A5568" />
+          <polygon points="250,50 280,85 220,85" fill="#EDF2F7" />
+          <polygon points="300,200 450,20 600,200" fill="#2D3748" />
+          <polygon points="450,20 480,60 420,60" fill="#EDF2F7" />
+
+          <!-- Road -->
+          <path d="M 0,170 Q 300,120 600,170" stroke="#718096" stroke-width="40" fill="none" />
+          <path d="M 0,170 Q 300,120 600,170" stroke="#ECC94B" stroke-width="4" stroke-dasharray="15,15" fill="none" />
+
+          <!-- Trees -->
+          <circle cx="80" cy="130" r="20" fill="#38A169" />
+          <rect x="75" y="145" width="10" height="20" fill="#744210" />
+          <circle cx="520" cy="120" r="25" fill="#276749" />
+          <rect x="515" y="140" width="10" height="25" fill="#744210" />
+
+          <!-- Small Car preview -->
+          <g transform="translate(240, 105)">
+            <rect x="10" y="15" width="60" height="25" rx="8" fill="#E53E3E" />
+            <path d="M 20,15 L 30,0 L 50,0 L 60,15 Z" fill="#FEB2B2" />
+            <circle cx="25" cy="40" r="8" fill="#1A202C" />
+            <circle cx="55" cy="40" r="8" fill="#1A202C" />
+            <polygon points="65,5 75,0 75,10" fill="#ECC94B" /> <!-- Flag -->
+          </g>
+        </svg>
+      </div>
+
+      <button class="btn-main" onclick="showScreen('map-screen')">
+        <span>🚀</span> MULA KEMBARA
+      </button>
+    </div>
+
+    <!-- =========================================================
+         SCREEN 2: MAP SCREEN
+         ========================================================= -->
+    <div id="map-screen" class="screen">
+      <div class="map-header">🗺️ PETA KEMBARA PUNCAK</div>
+
+      <div class="map-grid" id="map-grid-container">
+        <!-- Rendered dynamically by JavaScript -->
+      </div>
+
+      <button class="btn-main" onclick="showScreen('instructions-screen')">
+        <span>TERUSKAN</span> ➔
+      </button>
+    </div>
+
+    <!-- =========================================================
+         SCREEN 3: HOW TO PLAY SCREEN
+         ========================================================= -->
+    <div id="instructions-screen" class="screen">
+      <div class="map-header">📖 CARA BERMAIN</div>
+
+      <div class="instruction-card">
+        <div class="instruction-grid">
+          <div class="instruction-item">
+            <span>🎧</span> Dengar ayat.
+          </div>
+          <div class="instruction-item">
+            <span>👀</span> Perhatikan perkataan berwarna ungu.
+          </div>
+          <div class="instruction-item">
+            <span>🧠</span> Cari perkataan yang sama.
+          </div>
+          <div class="instruction-item">
+            <span>🖱️</span> Pilih jawapan yang betul.
+          </div>
+          <div class="instruction-item">
+            <span>🚗</span> Jawapan betul menggerakkan kereta.
+          </div>
+          <div class="instruction-item">
+            <span>⭐</span> Kumpul mata & sampai ke puncak!
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-main" onclick="startGame()">
+        <span>MULA BERMAIN</span> 🚀
+      </button>
+    </div>
+
+    <!-- =========================================================
+         SCREEN 4: MAIN GAME SCREEN
+         ========================================================= -->
+    <div id="game-screen" class="screen">
+      <!-- Header Stats Bar -->
+      <div class="game-header">
+        <div class="title-badge">KEM-KaNAK</div>
+        <div class="stats-container">
+          <div class="stat-box" id="level-display">TAHAP: 1 / 10</div>
+          <div class="stat-box" id="score-display">SKOR: 0</div>
+        </div>
+      </div>
+
+      <!-- Top Animation Arena -->
+      <div class="game-viewport">
+        <!-- Clouds -->
+        <div class="cloud" style="width: 80px; height: 30px; top: 15px; animation-duration: 20s;"></div>
+        <div class="cloud" style="width: 120px; height: 40px; top: 40px; animation-duration: 14s;"></div>
+
+        <!-- Progress bar line -->
+        <div style="position: absolute; top: 10px; left: 20px; right: 20px; z-index: 10;">
+          <div class="progress-bar-box">
+            <div id="progress-fill" class="progress-fill"></div>
+          </div>
+        </div>
+
+        <!-- Mountain Background -->
+        <svg style="position: absolute; bottom: 60px; width: 100%; height: 120px;" preserveAspectRatio="none" viewBox="0 0 900 120">
+          <polygon points="0,120 150,30 300,120" fill="#68D391" />
+          <polygon points="200,120 400,10 600,120" fill="#48BB78" />
+          <polygon points="500,120 700,20 900,120" fill="#38A169" />
+        </svg>
+
+        <!-- Road -->
+        <div class="road">
+          <div class="road-line"></div>
+        </div>
+
+        <!-- Car Container (SVG) -->
+        <div id="car" class="car-container driving">
+          <svg viewBox="0 0 110 65" width="100%" height="100%">
+            <!-- Car Body -->
+            <rect x="15" y="20" width="75" height="30" rx="10" fill="#E53E3E" />
+            <path d="M 30,20 L 42,3 L 70,3 L 82,20 Z" fill="#BEE3F8" stroke="#2B6CB0" stroke-width="2" />
+            <!-- Explorer Child Driver -->
+            <circle cx="50" cy="12" r="7" fill="#FBD38D" /> <!-- Head -->
+            <circle cx="50" cy="6" r="8" fill="#D69E2E" /> <!-- Scout Hat -->
+            <rect x="44" y="4" width="12" height="3" fill="#744210" />
+            <!-- Wheels -->
+            <circle cx="35" cy="50" r="11" fill="#1A202C" />
+            <circle cx="35" cy="50" r="4" fill="#A0AEC0" />
+            <circle cx="75" cy="50" r="11" fill="#1A202C" />
+            <circle cx="75" cy="50" r="4" fill="#A0AEC0" />
+            <!-- Headlight -->
+            <circle cx="90" cy="32" r="4" fill="#FEFCBF" />
+            <!-- Scout Flag -->
+            <line x1="15" y1="20" x2="15" y2="2" stroke="#744210" stroke-width="3" />
+            <polygon points="15,2 0,8 15,14" fill="#3182CE" />
+          </svg>
+        </div>
+
+        <!-- Obstacle Container (SVG) -->
+        <div id="obstacle" class="obstacle-container">
+          <svg id="obstacle-svg" viewBox="0 0 80 70" width="100%" height="100%">
+            <!-- Rendered by JavaScript per level -->
+          </svg>
+        </div>
+      </div>
+
+      <!-- Lower Interactive Card Area -->
+      <div class="interactive-area">
+        <!-- Audio TTS Controls -->
+        <div class="audio-controls">
+          <button class="btn-main btn-audio" onclick="playSentenceAudio()">
+            🔊 DENGAR AYAT
+          </button>
+          <button class="btn-main btn-audio" style="background:#4A5568; border-color:#2D3748; box-shadow:0 6px 0 #1A202C;" onclick="playSentenceAudio()">
+            🔁 DENGAR SEMULA
+          </button>
+        </div>
+
+        <!-- Sentence Display Box -->
+        <div class="sentence-card">
+          <div id="sentence-display" class="sentence-text">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <div class="question-prompt">Apakah perkataan berwarna ungu?</div>
+
+        <!-- 3 Large Option Buttons -->
+        <div class="options-grid" id="options-container">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================
+         SCREEN 5: VICTORY SUMMIT SCREEN
+         ========================================================= -->
+    <div id="victory-screen" class="screen">
+      <div class="victory-card">
+        <div style="font-size: 4rem; margin-bottom: 10px;">🏔️🏆</div>
+        <div class="main-title" style="color: #2B6CB0; font-size: 2.8rem;">TAHNIAH!</div>
+        <div class="sub-title" style="color: #2F855A; font-size: 1.5rem; margin-top: 10px;">
+          Kamu berjaya menamatkan Kembara Kata Nama Am!
+        </div>
+
+        <div style="margin: 25px 0; background: #FEFCBF; border: 4px dashed #D69E2E; padding: 15px; border-radius: 20px;">
+          <div style="font-size: 1.2rem; color: #744210; font-weight: bold;">SKOR AKHIR</div>
+          <div style="font-size: 3.5rem; color: #B7791F; font-weight: 900;" id="final-score">100 / 100</div>
+        </div>
+
+        <p style="font-size: 1.3rem; font-weight: bold; color: #4A5568; margin-bottom: 25px;">
+          Hebat! Kamu berjaya mengenal pasti Kata Nama Am.
+        </p>
+
+        <button class="btn-main" onclick="resetGame()">
+          🔄 MAIN LAGI
+        </button>
+      </div>
+    </div>
+
+    <!-- =========================================================
+         FEEDBACK MODAL OVERLAY
+         ========================================================= -->
+    <div id="feedback-modal" class="feedback-modal">
+      <div id="feedback-card" class="feedback-card">
+        <div id="feedback-title" class="feedback-title correct">🎉 BETUL!</div>
+        <div id="feedback-msg" class="feedback-msg">Syabas! Kamu berjaya mengenal pasti Kata Nama Am.</div>
+        <div id="feedback-points" style="font-size: 1.5rem; font-weight: 900; color: #D69E2E; margin-bottom: 20px; display: none;">
+          +10 MATA
+        </div>
+        <button id="feedback-btn" class="btn-main" onclick="handleFeedbackContinue()">
+          TAHAP SETERUSNYA ➔
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =========================================================
+       JAVASCRIPT GAME LOGIC & TTS
+       ========================================================= -->
+  <script>
+    /* =========================================================
+       GAME DATA (10 LEVELS ACCORDING TO SPECIFICATIONS)
+       ========================================================= */
+    const levelsData = [
+      {
+        before: "Cikgu Siti membawa ",
+        target: "beg",
+        after: " ke dalam kelas.",
+        full: "Cikgu Siti membawa beg ke dalam kelas.",
+        choices: ["botol", "beg", "meja"],
+        obstacle: "barrier"
+      },
+      {
+        before: "Ali membaca ",
+        target: "buku",
+        after: " di perpustakaan.",
+        full: "Ali membaca buku di perpustakaan.",
+        choices: ["kerusi", "buku", "beg"],
+        obstacle: "rock"
+      },
+      {
+        before: "Aisyah duduk di atas ",
+        target: "kerusi",
+        after: ".",
+        full: "Aisyah duduk di atas kerusi.",
+        choices: ["meja", "pintu", "kerusi"],
+        obstacle: "tree"
+      },
+      {
+        before: "Guru menutup ",
+        target: "pintu",
+        after: " sebelum keluar.",
+        full: "Guru menutup pintu sebelum keluar.",
+        choices: ["tingkap", "pintu", "almari"],
+        obstacle: "puddle"
+      },
+      {
+        before: "Murid bermain ",
+        target: "bola",
+        after: " di padang.",
+        full: "Murid bermain bola di padang.",
+        choices: ["buku", "bola", "pensel"],
+        obstacle: "barrier"
+      },
+      {
+        before: "Amir menggunakan ",
+        target: "pensel",
+        after: " untuk menulis.",
+        full: "Amir menggunakan pensel untuk menulis.",
+        choices: ["pemadam", "pensel", "pembaris"],
+        obstacle: "rock"
+      },
+      {
+        before: "Guru meletakkan buku di atas ",
+        target: "meja",
+        after: ".",
+        full: "Guru meletakkan buku di atas meja.",
+        choices: ["kerusi", "meja", "beg"],
+        obstacle: "bridge"
+      },
+      {
+        before: "Murid membawa ",
+        target: "botol",
+        after: " ke sekolah.",
+        full: "Murid membawa botol ke sekolah.",
+        choices: ["botol", "kasut", "buku"],
+        obstacle: "tree"
+      },
+      {
+        before: "Adik menaiki ",
+        target: "basikal",
+        after: " di taman.",
+        full: "Adik menaiki basikal di taman.",
+        choices: ["basikal", "kereta", "bola"],
+        obstacle: "puddle"
+      },
+      {
+        before: "Murid menyiram ",
+        target: "pokok",
+        after: " di halaman sekolah.",
+        full: "Murid menyiram pokok di halaman sekolah.",
+        choices: ["bunga", "pokok", "rumah"],
+        obstacle: "barrier"
+      }
+    ];
+
+    /* =========================================================
+       STATE VARIABLES
+       ========================================================= */
+    let currentLevel = 0;
+    let score = 0;
+    let isAnsweredCorrectly = false;
+
+    /* =========================================================
+       SCREEN NAVIGATION
+       ========================================================= */
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+
+      if (screenId === 'map-screen') {
+        renderMap();
+      }
+    }
+
+    function renderMap() {
+      const container = document.getElementById('map-grid-container');
+      container.innerHTML = '';
+
+      for (let i = 0; i < 10; i++) {
+        const node = document.createElement('div');
+        node.className = 'checkpoint-node';
+        
+        if (i < currentLevel) {
+          node.classList.add('completed');
+          node.innerHTML = `<span class="node-icon">✅</span><span>CP ${i+1}</span>`;
+        } else if (i === currentLevel) {
+          node.classList.add('active');
+          node.innerHTML = `<span class="node-icon">🚩</span><span>CP ${i+1}</span>`;
+        } else {
+          node.innerHTML = `<span class="node-icon">🔒</span><span>CP ${i+1}</span>`;
+        }
+
+        container.appendChild(node);
+      }
+    }
+
+    /* =========================================================
+       GAME INITIALIZATION & LEVEL LOAD
+       ========================================================= */
+    function startGame() {
+      showScreen('game-screen');
+      loadLevel(currentLevel);
+    }
+
+    function loadLevel(levelIndex) {
+      isAnsweredCorrectly = false;
+      const data = levelsData[levelIndex];
+
+      // Update UI Header & Progress
+      document.getElementById('level-display').innerText = `TAHAP: ${levelIndex + 1} / 10`;
+      document.getElementById('score-display').innerText = `SKOR: ${score}`;
+      document.getElementById('progress-fill').style.width = `${((levelIndex) / 10) * 100}%`;
+
+      // Reset Animations
+      const car = document.getElementById('car');
+      car.style.left = '60px';
+      car.classList.add('driving');
+      
+      const obstacle = document.getElementById('obstacle');
+      obstacle.classList.remove('cleared');
+      renderObstacleSVG(data.obstacle);
+
+      // Render Target Sentence (Target word highlighted purple & bold)
+      const sentenceDisplay = document.getElementById('sentence-display');
+      sentenceDisplay.innerHTML = `
+        ${data.before}<span class="highlight-target">${data.target}</span>${data.after}
+      `;
+
+      // Shuffle & Render Options Buttons
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+
+      // Clone choices array and randomize order
+      const shuffled = [...data.choices].sort(() => Math.random() - 0.5);
+
+      shuffled.forEach(choice => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-option';
+        btn.innerText = choice;
+        btn.onclick = () => checkAnswer(choice, data.target);
+        optionsContainer.appendChild(btn);
+      });
+
+      // Auto play audio upon level load
+      setTimeout(() => {
+        playSentenceAudio();
+      }, 500);
+    }
+
+    /* =========================================================
+       OBSTACLE SVG RENDERER
+       ========================================================= */
+    function renderObstacleSVG(type) {
+      const svg = document.getElementById('obstacle-svg');
+      if (type === 'rock') {
+        svg.innerHTML = `
+          <path d="M 10,60 Q 20,20 40,15 Q 70,10 75,45 Q 80,60 10,60 Z" fill="#718096" stroke="#4A5568" stroke-width="4"/>
+          <path d="M 25,25 Q 35,30 45,20" stroke="#A0AEC0" stroke-width="3" fill="none"/>
+        `;
+      } else if (type === 'tree') {
+        svg.innerHTML = `
+          <rect x="10" y="45" width="60" height="15" rx="5" fill="#744210" stroke="#422006" stroke-width="3"/>
+          <circle cx="15" cy="52" r="12" fill="#276749"/>
+          <circle cx="65" cy="52" r="12" fill="#276749"/>
+        `;
+      } else if (type === 'puddle') {
+        svg.innerHTML = `
+          <ellipse cx="40" cy="50" rx="35" ry="12" fill="#63B3ED" stroke="#3182CE" stroke-width="3"/>
+        `;
+      } else { // barrier / roadblock default
+        svg.innerHTML = `
+          <rect x="5" y="40" width="70" height="12" fill="#E53E3E" stroke="#9B2C2C" stroke-width="2"/>
+          <rect x="15" y="40" width="12" height="12" fill="#FFFFFF"/>
+          <rect x="39" y="40" width="12" height="12" fill="#FFFFFF"/>
+          <rect x="63" y="40" width="12" height="12" fill="#FFFFFF"/>
+          <rect x="15" y="52" width="6" height="15" fill="#4A5568"/>
+          <rect x="59" y="52" width="6" height="15" fill="#4A5568"/>
+        `;
+      }
+    }
+
+    /* =========================================================
+       SPEECH SYNTHESIS (AUDIO AUDIO SUPPORT)
+       ========================================================= */
+    function playSentenceAudio() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // Stop any active speech
+
+        const fullText = levelsData[currentLevel].full;
+        const utterance = new SpeechSynthesisUtterance(fullText);
+        utterance.lang = 'ms-MY';
+        utterance.rate = 0.85; // Slightly slower for primary school children
+        utterance.pitch = 1.05;
+        utterance.volume = 1.0;
+
+        // Try selecting female Malay voice if available
+        const voices = window.speechSynthesis.getVoices();
+        const msVoice = voices.find(v => v.lang.includes('ms') || v.lang.includes('id'));
+        if (msVoice) {
+          utterance.voice = msVoice;
+        }
+
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    /* =========================================================
+       ANSWER VALIDATION & FEEDBACK
+       ========================================================= */
+    function checkAnswer(selected, correct) {
+      const modal = document.getElementById('feedback-modal');
+      const card = document.getElementById('feedback-card');
+      const title = document.getElementById('feedback-title');
+      const msg = document.getElementById('feedback-msg');
+      const points = document.getElementById('feedback-points');
+      const btn = document.getElementById('feedback-btn');
+
+      if (selected === correct) {
+        isAnsweredCorrectly = true;
+        score += 10;
+        document.getElementById('score-display').innerText = `SKOR: ${score}`;
+
+        title.className = 'feedback-title correct';
+        title.innerText = '🎉 BETUL!';
+        msg.innerText = 'Syabas! Kamu berjaya mengenal pasti Kata Nama Am.';
+        points.style.display = 'block';
+        card.className = 'feedback-card';
+        btn.innerText = 'TAHAP SETERUSNYA ➔';
+
+        // Animate obstacle clear & car movement
+        document.getElementById('obstacle').classList.add('cleared');
+        setTimeout(() => {
+          document.getElementById('car').style.left = '450px';
+        }, 300);
+
+      } else {
+        isAnsweredCorrectly = false;
+        title.className = 'feedback-title wrong';
+        title.innerText = '❌ CUBA LAGI!';
+        msg.innerText = 'Perhatikan perkataan yang berwarna ungu.';
+        points.style.display = 'none';
+        card.className = 'feedback-card wrong';
+        btn.innerText = 'CUBA AGAIN 🔄';
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function handleFeedbackContinue() {
+      document.getElementById('feedback-modal').style.display = 'none';
+
+      if (isAnsweredCorrectly) {
+        currentLevel++;
+        if (currentLevel >= 10) {
+          // Finish Game -> Go to Victory Summit
+          document.getElementById('progress-fill').style.width = '100%';
+          showScreen('victory-screen');
+          document.getElementById('final-score').innerText = `${score} / 100`;
+        } else {
+          loadLevel(currentLevel);
+        }
+      }
+    }
+
+    /* =========================================================
+       RESET GAME
+       ========================================================= */
+    function resetGame() {
+      currentLevel = 0;
+      score = 0;
+      showScreen('start-screen');
+    }
+
+    // Ensure speech synthesis voices are loaded properly in Chrome/Safari
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+    }
+  </script>
+</body>
+</html>
